@@ -58,10 +58,6 @@ func (c *RequestCounter) CleanUp(ctx context.Context) {
 				continue
 			}
 
-			if oldLen == len(c.requestData) {
-				continue
-			}
-
 			err = c.repo.Sync(c.requestData)
 			if err != nil {
 				log.Println(err)

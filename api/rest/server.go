@@ -13,11 +13,12 @@ import (
 type Server struct {
 	cfg     *config.Config
 	counter *service.RequestCounter
+	limiter *service.RateLimiter
 }
 
 // New creates a new instance of the Server with the provided configuration and request counter.
-func New(cfg *config.Config, counter *service.RequestCounter) *Server {
-	return &Server{cfg: cfg, counter: counter}
+func New(cfg *config.Config, counter *service.RequestCounter, limiter *service.RateLimiter) *Server {
+	return &Server{cfg: cfg, counter: counter, limiter: limiter}
 }
 
 // Serve starts the HTTP server and listens for incoming requests.

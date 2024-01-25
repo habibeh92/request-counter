@@ -30,10 +30,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	limiter := service.NewRateLimiter(cfg.RateLimit)
+
 	// Start a goroutine for periodic cleanup of old request data.
 	go counter.CleanUp(ctx)
 
-	server := rest.New(cfg, counter)
+	server := rest.New(cfg, counter, limiter)
 
 	// Start serving HTTP requests and handle any errors that may occur.
 	if err = server.Serve(ctx); err != nil {

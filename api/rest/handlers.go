@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 // SetupRoutes configures the HTTP routes for the server.
@@ -12,7 +13,19 @@ func (s *Server) SetupRoutes(mux *http.ServeMux) {
 
 // countHandler handles HTTP requests to retrieve the count of the requests in last 60 seconds.
 func (s *Server) countHandler(w http.ResponseWriter, r *http.Request) {
+	if !s.limiter.Allow() {
+		s.responseJson(w, Response{
+			Status: http.StatusTooManyRequests,
+			Result: "Rate limit exceeded",
+		}, http.StatusTooManyRequests)
+		return
+	}
+	defer s.limiter.Release()
+
 	count := s.counter.Get(r.Context())
+
+	// simulate 2 second process
+	time.Sleep(2 * time.Second)
 
 	response := Response{
 		Status: http.StatusOK,
