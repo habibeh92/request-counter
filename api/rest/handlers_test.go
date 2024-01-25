@@ -18,6 +18,7 @@ func TestCountHandler(t *testing.T) {
 	defer cancel()
 
 	cfg := config.New()
+	limiter := service.NewRateLimiter(cfg.RateLimit)
 
 	counter, err := service.NewRequestsCounter(cfg, mock.New())
 	if err != nil {
@@ -26,7 +27,7 @@ func TestCountHandler(t *testing.T) {
 
 	go counter.CleanUp(ctx)
 
-	server := New(cfg, counter)
+	server := New(cfg, counter, limiter)
 	handler := server.counterMiddleware(http.HandlerFunc(server.countHandler))
 
 	for i := 0; i < 5; i++ {

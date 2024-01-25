@@ -7,6 +7,7 @@ import (
 type Config struct {
 	Http              Http
 	RequestsTimeLimit int
+	RateLimit         int
 }
 
 type Http struct {
@@ -22,5 +23,6 @@ func New() *Config {
 			Port: os.Getenv("APP_HTTP_PORT"),
 		},
 		RequestsTimeLimit: 60,
+		RateLimit:         5,
 	}
 }
